@@ -1,21 +1,37 @@
 const graphql = require('graphql');
 const axios = require('axios');
 
-const { GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLSchema } = graphql;
+const {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLInt,
+  GraphQLSchema,
+  GraphQLList,
+} = graphql;
 //GraphQLSchema is a helper that takes in a RootQuery and returns a GraphQL instance
 
 const CompanyType = new GraphQLObjectType({
   name: 'Company',
-  fields: {
+  fields: () => ({
     id: { type: GraphQLString },
     name: { type: GraphQLString },
     product: { type: GraphQLString },
-  },
+    users: {
+      type: new GraphQLList(UserType),
+      async resolve(parentValue, args) {
+        const { data } = await axios.get(
+          `http://localhost:3000/companies/${parentValue.id}/users`
+        );
+        return data;
+      },
+    },
+  }),
 });
+//the parentValue here is the instance of the company that has been fetched here and I am working with
 
 const UserType = new GraphQLObjectType({
   name: 'User',
-  fields: {
+  fields: () => ({
     id: { type: GraphQLString },
     firstName: { type: GraphQLString },
     age: { type: GraphQLInt },
@@ -28,7 +44,7 @@ const UserType = new GraphQLObjectType({
         return data;
       },
     },
-  },
+  }),
 });
 
 //RootQuery points to a very particular record in the graph of all the data I am dealing with
@@ -45,6 +61,16 @@ const RootQuery = new GraphQLObjectType({
         //restructuring data was done because axios returns (when promise resolves) something that looks like '{data: {...}, status: 200, headers: {...} ...}'
         return data;
         //If my query expects to be provided with the id of the user it is fetching, that id will be present in the args object that has been used as the second parameter here in resolve function
+      },
+    },
+    company: {
+      type: CompanyType,
+      args: { id: { type: GraphQLString } },
+      async resolve(parentValue, args) {
+        const { data } = await axios.get(
+          `http://localhost:3000/companies/${args.id}`
+        );
+        return data;
       },
     },
   },

@@ -2,7 +2,8 @@
   "users": [
     { "id": "23", "firstName": "Bill", "age": 50, "companyId": "1" },
     { "id": "47", "firstName": "Sam", "age": 51, "companyId": "1" },
-    { "id": "49", "firstName": "Alec", "age": 51, "companyId": "2" }
+    { "id": "49", "firstName": "Alec", "age": 55, "companyId": "2" },
+    { "id": "96", "firstName": "Nick", "age": 52, "companyId": "2" }
   ],
   "companies": [
     { "id": 1, "name": "Apple", "product": "iphone" },
