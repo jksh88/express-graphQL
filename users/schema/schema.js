@@ -4,12 +4,30 @@ const axios = require('axios');
 const { GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLSchema } = graphql;
 //GraphQLSchema is a helper that takes in a RootQuery and returns a GraphQL instance
 
+const CompanyType = new GraphQLObjectType({
+  name: 'Company',
+  fields: {
+    id: { type: GraphQLString },
+    name: { type: GraphQLString },
+    product: { type: GraphQLString },
+  },
+});
+
 const UserType = new GraphQLObjectType({
   name: 'User',
   fields: {
     id: { type: GraphQLString },
     firstName: { type: GraphQLString },
     age: { type: GraphQLInt },
+    company: {
+      type: CompanyType,
+      async resolve(parentValue, args) {
+        const { data } = await axios.get(
+          `http://localhost:3000/companies/${parentValue.companyId}`
+        );
+        return data;
+      },
+    },
   },
 });
 
