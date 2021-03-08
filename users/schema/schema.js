@@ -1,13 +1,8 @@
 const graphql = require('graphql');
-const _ = require('lodash');
+const axios = require('axios');
 
 const { GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLSchema } = graphql;
 //GraphQLSchema is a helper that takes in a RootQuery and returns a GraphQL instance
-
-const sampleUsers = [
-  { id: '23', firstName: 'Bill', age: 50 },
-  { id: '47', firstName: 'Sam', age: 51 },
-];
 
 const UserType = new GraphQLObjectType({
   name: 'User',
@@ -25,8 +20,12 @@ const RootQuery = new GraphQLObjectType({
     user: {
       type: UserType,
       args: { id: { type: GraphQLString } },
-      resolve(parentValue, args) {
-        return _.find(users, { id: args.id });
+      async resolve(parentValue, args) {
+        const { data } = await axios.get(
+          `http://localhost:3000/users/${args.id}`
+        );
+        //restructuring data was done because axios returns (when promise resolves) something that looks like '{data: {...}, status: 200, headers: {...} ...}'
+        return data;
         //If my query expects to be provided with the id of the user it is fetching, that id will be present in the args object that has been used as the second parameter here in resolve function
       },
     },
