@@ -10,7 +10,7 @@ const {
 } = graphql;
 //GraphQLSchema is a helper that takes in a RootQuery and returns a GraphQL instance
 //graphiql is the client and the graphql-express is its server at 5000
-//GraphQL server(at 5000) makes queries to outside 3rd party server(3000) that has its own database to grad data from it - Sct3.14)
+//GraphQL server(at 5000) makes queries to outside 3rd party server(3000) that has its own database to grab data from it - Sct3.14)
 //json-server is used here to mock that 3rd party server. it needs infomration in db.json file base on which it mocks that server
 //json-server is a completely separate process from the express-graphql server running
 //json-server is run on 3000 by default (https://www.npmjs.com/package/json-server#alternative-port)
